@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Never started playing (unsupported/blocked/missing file or a very slow network): continue to the hero
     // instead of leaving the guest on a frozen poster.
-    startTimer = setTimeout(proceed, 12000);
+    startTimer = setTimeout(proceed, 6000);
     const watchdog = setInterval(() => {
       if (settled) { clearInterval(watchdog); return; }
       if (openingVideo.networkState === 3 /* NETWORK_NO_SOURCE */) { clearInterval(watchdog); proceed(); }

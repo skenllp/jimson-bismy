@@ -166,15 +166,10 @@ body[style*="overflow: hidden"] .page:not(#open):not(#hero){
 /* Background media helpers: the vertical (9:16) videos are always shown in full
    ("contain"); a blurred copy of the poster fills any spare space so nothing is cropped. */
 .bg-blur{
-  position:absolute;inset:-6%;width:112%;height:112%;object-fit:cover;z-index:0;
+  position:absolute;top:-6%;left:-6%;width:112%;height:112%;object-fit:cover;z-index:0;
   filter:blur(30px) saturate(1.08);
 }
 .bg-media.fit{object-fit:contain !important;}
-/* feather the top/bottom edge of the contained video into the blurred fill so there is no hard seam */
-#open .bg-media,#hero .bg-media{
-  -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 3.5%, #000 96.5%, transparent 100%);
-          mask-image:linear-gradient(to bottom, transparent 0, #000 3.5%, #000 96.5%, transparent 100%);
-}
 
 /* ============================================================
    01 OPEN INVITATION
@@ -197,20 +192,20 @@ body[style*="overflow: hidden"] .page:not(#open):not(#hero){
   z-index:1000;
 }
 #open .bg-media{
-  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+  position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;object-fit:contain;
   z-index:1;
 }
 #openingVideo{opacity:0;transition:opacity .35s ease;}
 #openingVideo.on{opacity:1;}
 #open .bg-scrim{
-  position:absolute;inset:0;
+  position:absolute;top:0;left:0;right:0;bottom:0;
   background:linear-gradient(180deg, rgba(10,8,4,0.12) 0%, rgba(10,8,4,0.08) 30%, rgba(10,8,4,0.62) 58%, rgba(10,8,4,0.9) 100%);
   z-index:2;
   transition:opacity .7s ease;
 }
 #open.revealing .bg-scrim{opacity:0;}
 #open .open-content{
-  position:relative;z-index:6;
+  position:relative;z-index:10;
   width:100%;
   padding:0 30px calc(64px + var(--safe-bottom));
   display:flex;flex-direction:column;align-items:center;
@@ -328,10 +323,10 @@ body[style*="overflow: hidden"] .page:not(#open):not(#hero){
   background:#241a14;
 }
 #hero .bg-media{
-  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:1;
+  position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;object-fit:contain;z-index:1;
 }
 #hero .bg-scrim{
-  position:absolute;inset:0;z-index:2;
+  position:absolute;top:0;left:0;right:0;bottom:0;z-index:2;
   background:linear-gradient(180deg, rgba(15,12,6,0.58) 0%, rgba(15,12,6,0.18) 22%, rgba(15,12,6,0.02) 40%, rgba(15,12,6,0.02) 70%, rgba(15,12,6,0.4) 100%);
 }
 #hero .hero-content{

@@ -192,7 +192,8 @@ body[style*="overflow: hidden"] .page:not(#open):not(#hero){
   z-index:1000;
 }
 #open .bg-media{
-  position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;object-fit:contain;
+  /* fill the whole screen edge to edge (no top/bottom gap on tall phones) */
+  position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;object-fit:cover;object-position:center center;
   z-index:1;
 }
 #openingVideo{opacity:0;transition:opacity .35s ease;}
@@ -347,7 +348,8 @@ body[style*="overflow: hidden"] .page:not(#open):not(#hero){
   background:#241a14;
 }
 #hero .bg-media{
-  position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;object-fit:contain;z-index:1;
+  /* fill the whole screen edge to edge (no top/bottom gap on tall phones) */
+  position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;object-fit:cover;object-position:center center;z-index:1;
 }
 #hero .bg-scrim{
   position:absolute;top:0;left:0;right:0;bottom:0;z-index:2;
@@ -356,8 +358,8 @@ body[style*="overflow: hidden"] .page:not(#open):not(#hero){
 #hero .hero-content{
   position:relative;z-index:6;
   width:100%;
-  /* start the title inside the (contained) video frame, below any blurred top margin */
-  padding:calc(max(0px, (100svh - min(100vw, var(--page-max)) * 16 / 9) / 2) + 44px + var(--safe-top)) 24px 0;
+  /* the video now fills the screen, so the title simply sits below the top safe area */
+  padding:calc(44px + var(--safe-top)) 24px 0;
   text-align:center;
   color:var(--ivory);
 }
@@ -744,6 +746,16 @@ body[style*="overflow: hidden"] .page:not(#open):not(#hero){
 }
 .venue-btn:hover,.venue-btn:focus-visible{background:var(--gold);color:var(--charcoal);border-color:var(--gold);outline:none;}
 .venue-btn svg{width:14px;height:14px;flex:none;}
+/* embedded Google Map inside each venue card */
+.venue-map{
+  width:100%;
+  aspect-ratio:4/3;
+  margin:0 0 22px;
+  border:1px solid rgba(198,161,91,0.6);
+  padding:4px;
+  background:rgba(20,17,10,0.35);
+}
+.venue-map iframe{display:block;width:100%;height:100%;border:0;filter:sepia(.12) saturate(.95);}
 
 /* ============================================================
    OUR MOMENTS (gallery)
@@ -1359,6 +1371,9 @@ form.jb-form{text-align:left;max-width:420px;margin:0 auto;}
         <div class="vplace">Perumthuruthu, Kottayam, Kerala</div>
         <div class="vdate">Saturday<br>23 January 2027</div>
         <div class="vtime">4:00 PM</div>
+        <div class="venue-map">
+          <iframe title="Map: St. Mathews Church, Perumthuruthu, Kottayam" src="https://www.google.com/maps?q=St.+Mathews+Church,+Perumthuruthu,+Kottayam,+Kerala&amp;z=15&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+        </div>
         <a class="venue-btn" id="engagementMapLink" href="https://share.google/rpDI715UbBvhcBiN8" target="_blank" rel="noopener noreferrer" aria-label="View location of the engagement ceremony at St. Mathews Church (opens Google Maps in a new tab)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           View Location
@@ -1386,6 +1401,9 @@ form.jb-form{text-align:left;max-width:420px;margin:0 auto;}
         <div class="vplace">Banquet Hall, Kumarakom,<br>Kottayam, Kerala</div>
         <div class="vdate">Saturday<br>23 January 2027</div>
         <div class="vtime">5:00 PM</div>
+        <div class="venue-map">
+          <iframe title="Map: KTDC Waterscapes, Kumarakom, Kottayam" src="https://www.google.com/maps?q=KTDC+Waterscapes,+Kumarakom,+Kottayam,+Kerala&amp;z=15&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+        </div>
         <a class="venue-btn" id="receptionMapLink" href="https://share.google/k788WKtIAYAI6QPbH" target="_blank" rel="noopener noreferrer" aria-label="View location of the reception at KTDC Waterscapes (opens Google Maps in a new tab)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           View Location

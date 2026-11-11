@@ -301,6 +301,30 @@ body[style*="overflow: hidden"] .page:not(#open):not(#hero){
   opacity:0;
   pointer-events:none;
 }
+/* Couple's names revealed in the bright doorway after the doors open */
+#open .door-names{
+  position:absolute;left:0;right:0;top:50%;z-index:5;
+  transform:translateY(-46%) scale(.94);
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  opacity:0;pointer-events:none;
+  transition:opacity 1.4s ease, transform 1.8s cubic-bezier(.22,.61,.36,1);
+  color:#5b4424;
+  text-shadow:0 0 18px rgba(255,250,238,0.95), 0 0 6px rgba(255,250,238,0.9);
+}
+#open .door-names.show{opacity:1;transform:translateY(-50%) scale(1);}
+#open .door-eyebrow{
+  font-family:var(--font-label);
+  font-size:10.5px;letter-spacing:0.4em;padding-left:0.4em;
+  text-transform:uppercase;color:#8a6a35;margin-bottom:14px;
+}
+#open .door-name{
+  font-family:var(--font-display);
+  font-size:clamp(36px,11vw,48px);font-weight:600;line-height:1.05;letter-spacing:0.02em;
+}
+#open .door-amp{
+  font-family:var(--font-script);
+  font-size:clamp(28px,8vw,36px);color:#a07c3c;line-height:1.1;margin:4px 0;
+}
 #open.opened{
   animation:fadeOutOpen 1.2s ease forwards;
   pointer-events:none;
@@ -1201,6 +1225,13 @@ form.jb-form{text-align:left;max-width:420px;margin:0 auto;}
       <source src="assets/opening.mp4" type="video/mp4">
     </video>
     <div class="bg-scrim"></div>
+    <!-- Names revealed inside the doorway once the doors open (shown by script.js) -->
+    <div class="door-names" id="doorNames" aria-hidden="true">
+      <div class="door-eyebrow">The Engagement Of</div>
+      <div class="door-name">Jimson</div>
+      <div class="door-amp">&amp;</div>
+      <div class="door-name">Bismy</div>
+    </div>
     <div class="open-content">
       <div class="monogram">JB</div>
       <div class="invite-line1">The Engagement Of</div>

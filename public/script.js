@@ -105,8 +105,24 @@ document.addEventListener('DOMContentLoaded', () => {
     openingVideo.playsInline = true;
     try { openingVideo.currentTime = 0; } catch (e) {}
 
-    // 3. Hand over to the hero ONLY on the real "ended" event (timers are just safety nets).
-    openingVideo.addEventListener('ended', proceed, { once:true });
+    // 3. Once the doors have opened (~5.4s into the video), reveal the couple's names in the doorway.
+    const doorNames = document.getElementById('doorNames');
+    let namesShown = false;
+    const NAMES_AT = 5.4;
+    const showNames = () => {
+      if (namesShown || !doorNames) return;
+      namesShown = true;
+      doorNames.classList.add('show');
+    };
+    openingVideo.addEventListener('timeupdate', function onTime(){
+      if (openingVideo.currentTime >= NAMES_AT){ showNames(); openingVideo.removeEventListener('timeupdate', onTime); }
+    });
+
+    // 4. Hand over to the hero ONLY on the real "ended" event (timers are just safety nets).
+    //    Hold on the names for a moment so guests can read them before the cross-fade.
+    openingVideo.addEventListener('ended', () => {
+      if (namesShown) setTimeout(proceed, 1500); else proceed();
+    }, { once:true });
     // "error" fires on the <source> child (does not bubble), so listen in the capture phase.
     openingVideo.addEventListener('error', proceed, { capture:true, once:true });
 

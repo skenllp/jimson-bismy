@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Guest Desk — Jimson &amp; Bismy</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="theme-color" content="#2E2A22">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- Sign in -->
+<main id="loginView" class="login" hidden>
+  <form id="loginForm" class="login-card" autocomplete="off" novalidate>
+    <div class="eyebrow">Private · Event Staff</div>
+    <h1>Guest Desk</h1>
+    <p class="muted">Jimson &amp; Bismy · Engagement &amp; Reception</p>
+    <label for="loginName">Your name <span class="opt">(for the check-in log)</span></label>
+    <input id="loginName" class="input" type="text" maxlength="40" autocomplete="name">
+    <label for="loginCode">Access code</label>
+    <input id="loginCode" class="input" type="password" autocomplete="current-password" required>
+    <div id="loginMsg" class="msg" role="alert"></div>
+    <button class="btn primary" id="loginBtn" type="submit">Sign In</button>
+  </form>
+</main>
+
+<!-- App -->
+<div id="appView" hidden>
+  <header class="top">
+    <div>
+      <div class="eyebrow">Guest Desk</div>
+      <div class="title">Jimson &amp; Bismy</div>
+    </div>
+    <div class="who">
+      <span id="whoChip" class="chip"></span>
+      <button class="btn small ghost" id="logoutBtn" type="button">Sign out</button>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button role="tab" data-tab="checkin" class="tab" aria-selected="true">Check-in</button>
+    <button role="tab" data-tab="guests" class="tab" aria-selected="false">Guests</button>
+    <button role="tab" data-tab="overview" class="tab" aria-selected="false">Overview</button>
+    <button role="tab" data-tab="wishes" class="tab admin-only" aria-selected="false">Wishes</button>
+  </nav>
+
+  <!-- CHECK-IN -->
+  <section id="tab-checkin" class="panel" role="tabpanel">
+    <div class="seg" role="radiogroup" aria-label="Event being checked in">
+      <button type="button" class="seg-btn" data-event="engagement" role="radio" aria-checked="true">Engagement <small>4:00 PM</small></button>
+      <button type="button" class="seg-btn" data-event="reception" role="radio" aria-checked="false">Reception <small>5:00 PM</small></button>
+    </div>
+    <div id="eventProgress" class="progress"></div>
+
+    <div class="card scanner">
+      <div class="scan-view" id="scanView" hidden>
+        <video id="scanVideo" playsinline muted></video>
+        <div class="scan-frame" aria-hidden="true"></div>
+      </div>
+      <canvas id="scanCanvas" hidden></canvas>
+      <div id="scanStatus" class="muted center">Point the camera at a guest’s QR code.</div>
+      <div class="row-btns">
+        <button class="btn primary" id="scanToggle" type="button">Start Camera</button>
+      </div>
+    </div>
+
+    <div id="scanResult" class="result" hidden role="status" aria-live="assertive"></div>
+
+    <div class="card">
+      <h2>Find a guest</h2>
+      <form id="quickForm" class="inline-form" role="search">
+        <input id="quickQ" class="input" type="search" placeholder="Name, booking reference or phone" autocomplete="off" aria-label="Search guests">
+        <button class="btn primary" type="submit">Search</button>
+      </form>
+      <div id="quickResults" class="list"></div>
+    </div>
+  </section>
+
+  <!-- GUESTS -->
+  <section id="tab-guests" class="panel" role="tabpanel" hidden>
+    <div class="card">
+      <form id="guestFilters" class="filters">
+        <input id="gQ" class="input" type="search" placeholder="Search name, reference or phone" aria-label="Search">
+        <select id="gStatus" class="input" aria-label="Reply status">
+          <option value="">All replies</option><option value="attending">Attending</option><option value="declined">Declined</option><option value="cancelled">Cancelled</option>
+        </select>
+        <select id="gEvent" class="input" aria-label="Event">
+          <option value="">Any event</option><option value="engagement">Engagement</option><option value="reception">Reception</option>
+        </select>
+        <select id="gCheckin" class="input" aria-label="Check-in status">
+          <option value="">Any check-in</option>
+          <option value="engagement_in">Engagement: checked in</option><option value="engagement_pending">Engagement: pending</option>
+          <option value="reception_in">Reception: checked in</option><option value="reception_pending">Reception: pending</option>
+        </select>
+      </form>
+      <div class="row-btns spread">
+        <span id="gCount" class="muted"></span>
+        <button class="btn small ghost admin-only" id="exportBtn" type="button">Export CSV</button>
+      </div>
+    </div>
+    <div id="guestList" class="list"></div>
+    <div class="row-btns"><button class="btn ghost" id="gMore" type="button" hidden>Load more</button></div>
+  </section>
+
+  <!-- OVERVIEW -->
+  <section id="tab-overview" class="panel" role="tabpanel" hidden>
+    <div id="overview"></div>
+    <div class="row-btns"><button class="btn small ghost" id="refreshStats" type="button">Refresh</button></div>
+  </section>
+
+  <!-- WISHES (admin) -->
+  <section id="tab-wishes" class="panel admin-only" role="tabpanel" hidden>
+    <div class="seg small">
+      <button type="button" class="seg-btn" data-wstatus="pending" role="radio" aria-checked="true">Pending</button>
+      <button type="button" class="seg-btn" data-wstatus="approved" role="radio" aria-checked="false">Approved</button>
+      <button type="button" class="seg-btn" data-wstatus="all" role="radio" aria-checked="false">All</button>
+    </div>
+    <div id="wishAdminList" class="list"></div>
+  </section>
+</div>
+
+<!-- Edit dialog (admin) -->
+<div id="editModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="editTitle">
+  <form id="editForm" class="modal-card" novalidate>
+    <h2 id="editTitle">Edit reservation</h2>
+    <label for="eName">Guest name</label><input id="eName" class="input" maxlength="80">
+    <label for="ePhone">Phone</label><input id="ePhone" class="input" inputmode="tel" maxlength="20">
+    <label for="eStatus">Reply</label>
+    <select id="eStatus" class="input"><option value="attending">Attending</option><option value="declined">Declined</option><option value="cancelled">Cancelled</option></select>
+    <div class="two">
+      <div><label for="eGuests">Guests</label><select id="eGuests" class="input"></select></div>
+      <div><label for="eEvents">Events</label><select id="eEvents" class="input"><option value="both">Both</option><option value="engagement">Engagement</option><option value="reception">Reception</option></select></div>
+    </div>
+    <label for="eMsg">Message</label><textarea id="eMsg" class="input" rows="3" maxlength="300"></textarea>
+    <div id="editMsg" class="msg" role="alert"></div>
+    <div class="row-btns spread">
+      <button type="button" class="btn ghost" id="editCancel">Close</button>
+      <button type="submit" class="btn primary" id="editSave">Save</button>
+    </div>
+  </form>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "jimson-bismy-engagement",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Interactive engagement invitation for Jimson & Bismy — frontend, RSVP, wishes, QR check-in and admin dashboard.",
+  "license": "UNLICENSED",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev": "node server.js",
+    "migrate": "node scripts/migrate.js",
+    "build": "node scripts/inject-site-url.js",
+    "test": "node --test tests/api.test.js"
+  },
+  "dependencies": {
+    "pg": "^8.13.0"
+  }
+}

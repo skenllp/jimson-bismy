@@ -120,21 +120,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { once:true });
 
     // Never started playing (unsupported/blocked/missing file or a very slow network): continue to the hero
-    // instead of leaving the guest on a frozen poster.
-    startTimer = setTimeout(proceed, 6000);
+    // instead of leaving the guest on a frozen poster. While the file is still downloading we keep waiting
+    // (up to 15s in total) rather than skipping the video on a slow phone connection.
+    const startedAt = Date.now();
+    const checkStart = () => {
+      if (settled || openingVideo.classList.contains('on')) return;
+      const stillLoading = openingVideo.networkState === 2 /* NETWORK_LOADING */ && openingVideo.error == null;
+      if (stillLoading && Date.now() - startedAt < 15000) { startTimer = setTimeout(checkStart, 1000); return; }
+      proceed();
+    };
+    startTimer = setTimeout(checkStart, 6000);
     const watchdog = setInterval(() => {
       if (settled) { clearInterval(watchdog); return; }
       if (openingVideo.networkState === 3 /* NETWORK_NO_SOURCE */) { clearInterval(watchdog); proceed(); }
     }, 400);
 
-    const playPromise = openingVideo.play();
-    if (playPromise && typeof playPromise.catch === 'function'){
-      playPromise.catch(() => { setTimeout(proceed, 700); });
-    }
+    if (openingVideo.preload !== 'auto') openingVideo.preload = 'auto';
+    let retried = false;
+    const tryPlay = () => {
+      const p = openingVideo.play();
+      if (p && typeof p.catch === 'function'){
+        p.catch((err) => {
+          if (settled) return;
+          // AbortError = playback was interrupted (e.g. by a load()); try once more before giving up.
+          if (!retried && err && err.name === 'AbortError') { retried = true; setTimeout(tryPlay, 150); return; }
+          setTimeout(proceed, 700);
+        });
+      }
+    };
+    tryPlay();
   }
 
   // Warm the opening video once the page is idle (the poster is already on screen).
+  // Never call load() once the guest has tapped Open: it would reset and abort the playing video.
   const warmOpening = () => {
+    if (opened || openingVideo.readyState > 0 || openingVideo.networkState === 2) return;
     try { openingVideo.preload = 'auto'; openingVideo.load(); } catch (e) {}
   };
   window.addEventListener('load', () => {
